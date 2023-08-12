@@ -1,0 +1,410 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+public class StoreApp extends JFrame {
+
+    private Records registro;
+    private JTextField nameField;
+    private JTextField categoryField;
+    private JTextField providerField;
+    private JTextField uPriceField;
+    private JTextField quantityField;
+    private JTextArea productsText;
+    
+    public static final Color VERY_DARK_GRAY = new Color(12, 12, 12);
+    public static final Color BLUE_GREY = new Color(16, 27, 80);
+
+    public StoreApp() {
+        setTitle("STORE");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
+        registro = new Records();
+        registro.loadFromStorage();
+
+        JLabel nameL = new JLabel("NAME:");
+        nameL.setForeground(Color.WHITE);
+        JLabel categoryL = new JLabel("CATEGORY:");
+        categoryL.setForeground(Color.WHITE);
+        JLabel uPriceL = new JLabel("PRICE:");
+        uPriceL.setForeground(Color.WHITE);
+        JLabel quantityL = new JLabel("QUANTITY:");
+        quantityL.setForeground(Color.WHITE);
+        JLabel providerL = new JLabel("PROVIDER:");
+        providerL.setForeground(Color.WHITE);
+
+        nameField = new JTextField(20);
+        categoryField = new JTextField(20);
+        providerField = new JTextField(20);
+        uPriceField = new JTextField(10);
+        quantityField = new JTextField(10);
+
+        JButton addButton = new JButton("    +ADD    ");
+        JButton deleteButton = new JButton("  DELETE  ");
+        JButton updateButton = new JButton(" UPDATE  ");
+        JButton showButton = new JButton("   SHOW   ");
+        JButton searchButton = new JButton(" SEARCH  ");
+        JButton outButton = new JButton(" LOGOUT  ");
+
+        productsText = new JTextArea();
+        productsText.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(productsText);
+
+        JPanel panel = new JPanel();
+        panel.setBackground(VERY_DARK_GRAY);
+        panel.setLayout(new GridLayout(7, 2));
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+        buttonsPanel.setBackground(VERY_DARK_GRAY);
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        addButton.setForeground(Color.WHITE);
+        addButton.setBackground(BLUE_GREY);
+        addButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setBackground(BLUE_GREY);
+        deleteButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        updateButton.setForeground(Color.WHITE);
+        updateButton.setBackground(BLUE_GREY);
+        updateButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        showButton.setForeground(Color.WHITE);
+        showButton.setBackground(BLUE_GREY);
+        showButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        searchButton.setForeground(Color.WHITE);
+        searchButton.setBackground(BLUE_GREY);
+        searchButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        outButton.setForeground(Color.WHITE);
+        outButton.setBackground(BLUE_GREY);
+        outButton.setBorder(BorderFactory.createLineBorder(BLUE_GREY));
+
+        buttonsPanel.add(addButton);
+        buttonsPanel.add(Box.createVerticalStrut(5));
+        buttonsPanel.add(deleteButton);
+        buttonsPanel.add(Box.createVerticalStrut(5));
+        buttonsPanel.add(updateButton);
+        buttonsPanel.add(Box.createVerticalStrut(5));
+        buttonsPanel.add(showButton);
+        buttonsPanel.add(Box.createVerticalStrut(5));
+        buttonsPanel.add(searchButton);
+        buttonsPanel.add(Box.createVerticalStrut(5));
+        buttonsPanel.add(outButton);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(nameL, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panel.add(nameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(categoryL, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(categoryField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(providerL, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panel.add(providerField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(uPriceL, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panel.add(uPriceField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panel.add(quantityL, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panel.add(quantityField, gbc);
+
+        add(panel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.SOUTH);
+        add(buttonsPanel, BorderLayout.WEST);
+
+        getContentPane().setBackground(Color.WHITE);
+        getContentPane().add(panel);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nameField.getText().toLowerCase();
+                String categoria = categoryField.getText().toLowerCase();
+                String proveedor = providerField.getText().toLowerCase();
+                double precio;
+                int cantidad;
+
+                for (StoreProducts product : registro.getproductIndex()) {
+                    if (product.getname().equals(nombre)) {
+                        JOptionPane.showMessageDialog(StoreApp.this, "El producto ya existe.");
+                        nameField.setText("");
+                        categoryField.setText("");
+                        providerField.setText("");
+                        uPriceField.setText("");
+                        quantityField.setText("");
+                        return;
+                    }
+                }
+
+                try {
+                    do {
+                        precio = Double.parseDouble(uPriceField.getText());
+                        if (precio < 0) {
+                            throw new NumberFormatException();
+                        }
+                    } while (precio < 0 || precio > 99999);
+                } catch (NumberFormatException exn) {
+                    JOptionPane.showMessageDialog(StoreApp.this, "Ingrese un valor numérico válido(el precio solo puede estar entre 1 y 99999).");
+                    return;
+                }
+
+                try {
+                    do {
+                        cantidad = Integer.parseInt(quantityField.getText());
+                        if (cantidad < 0) {
+                            throw new NumberFormatException();
+                        }
+                    } while (cantidad < 0 || cantidad > 99999);
+                } catch (NumberFormatException exn) {
+                    JOptionPane.showMessageDialog(StoreApp.this, "Ingrese un valor numérico válido(la categoria solo puede estar entre 1 y 99999).");
+                    return;
+                }
+
+                StoreProducts product = new StoreProducts(nombre, categoria, proveedor, precio, cantidad);
+                registro.addProduct(product);
+                registro.saveToStorage();
+
+                nameField.setText("");
+                categoryField.setText("");
+                providerField.setText("");
+                uPriceField.setText("");
+                quantityField.setText("");
+
+                JOptionPane.showMessageDialog(StoreApp.this, "El producto fue agregado.");
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nameField.getText().toLowerCase();
+                String categoria = categoryField.getText().toLowerCase();
+                String proveedor = providerField.getText().toLowerCase();
+
+                StoreProducts eliminar = null;
+                for (StoreProducts product : registro.getproductIndex()) {
+                    if (product.getname().equals(nombre) && product.getcategory().equals(categoria) && product.getprovider().equals(proveedor)) {
+                        eliminar = product;
+                        break;
+                    }
+                }
+
+                if (eliminar != null) {
+                    registro.deleteProduct(eliminar);
+                    registro.saveToStorage();
+                    JOptionPane.showMessageDialog(StoreApp.this, "El producto fue eliminado.");
+                    nameField.setText("");
+                    categoryField.setText("");
+                    providerField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(StoreApp.this, "Producto no encontrado.");
+                    nameField.setText("");
+                    categoryField.setText("");
+                    providerField.setText("");
+                }
+            }
+        });
+
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nameField.getText().toLowerCase();
+                String categoria = categoryField.getText().toLowerCase();
+
+                StoreProducts actualizar = null;
+                for (StoreProducts product : registro.getproductIndex()) {
+                    if (product.getname().equals(nombre) && product.getcategory().equals(categoria)) {
+                        actualizar = product;
+                        break;
+                    }
+                }
+
+                if (actualizar != null) {
+                    String newProvider;
+                    double newUPrice;
+                    int newQuantity;
+
+                    newProvider = providerField.getText();
+
+                    try {
+                        newUPrice = Double.parseDouble(uPriceField.getText());
+                        if (newUPrice < 0) {
+                            throw new NumberFormatException();
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(StoreApp.this, "Ingrese un valor numérico válido.");
+                        return;
+                    }
+
+                    try {
+                        newQuantity = Integer.parseInt(quantityField.getText());
+                        if (newQuantity < 0) {
+                            throw new NumberFormatException();
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(StoreApp.this, "Ingrese un valor numérico válido.");
+                        return;
+                    }
+
+                    registro.updateProduct(actualizar, newProvider, newUPrice, newQuantity);
+                    registro.saveToStorage();
+
+                    nameField.setText("");
+                    categoryField.setText("");
+                    providerField.setText("");
+                    uPriceField.setText("");
+                    quantityField.setText("");
+
+                    JOptionPane.showMessageDialog(StoreApp.this, "El producto fue actualizado.");
+                } else {
+                    JOptionPane.showMessageDialog(StoreApp.this, "Producto no encontrado.");
+                }
+            }
+        });
+
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nameField.getText().toLowerCase();
+                String categoria = categoryField.getText().toLowerCase();
+
+                StoreProducts busqueda = null;
+                for (StoreProducts product : registro.getproductIndex()) {
+                    if (product.getname().equals(nombre)) {
+                        busqueda = product;
+                        break;
+                    }
+                }
+
+                if (categoria != null && nombre.isEmpty()) {
+                    List<StoreProducts> productsByCategory = new ArrayList<>();
+
+                    for (StoreProducts product : registro.getproductIndex()) {
+                        if (product.getcategory().equals(categoria)) {
+                            productsByCategory.add(product);
+                        }
+                    }
+
+                    if (!productsByCategory.isEmpty()) {
+                        JFrame categoryTableFrame = new JFrame("PRODUCTOS");
+                        categoryTableFrame.setSize(500, 400);
+                        categoryTableFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        categoryTableFrame.setLayout(new BorderLayout());
+
+                        JTable categoryTable = new JTable();
+                        DefaultTableModel tableModel = new DefaultTableModel(
+                                new Object[]{"NOMBRE", "PROVEEDOR", "CATEGORÍA", "PRECIO", "EXISTENCIAS"}, 0);
+
+                        for (StoreProducts product : productsByCategory) {
+                            Object[] row = {
+                                product.getname(),
+                                product.getprovider(),
+                                product.getcategory(),
+                                product.getuPrice(),
+                                product.getquantity()
+                            };
+                            tableModel.addRow(row);
+                        }
+
+                        categoryTable.setModel(tableModel);
+
+                        JScrollPane scrollPane = new JScrollPane(categoryTable);
+                        categoryTableFrame.add(scrollPane, BorderLayout.CENTER);
+
+                        categoryTableFrame.setVisible(true);
+                    }
+                } else if (busqueda != null && categoria.isEmpty()) {
+                    nameField.setText(busqueda.getname());
+                    providerField.setText(busqueda.getprovider());
+                    categoryField.setText(busqueda.getcategory());
+                    uPriceField.setText(String.valueOf(busqueda.getuPrice()));
+                    quantityField.setText(String.valueOf(busqueda.getquantity()));
+                } else {
+                    JOptionPane.showMessageDialog(StoreApp.this, "Producto(s) no encontrado.");
+                }
+            }
+        });
+
+        showButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registro.showProducts();
+            }
+        });
+
+        outButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openLoginApp();
+            }
+        });
+
+    }
+
+    private void openLoginApp() {
+        LoginApp loginApp = new LoginApp();
+        loginApp.setVisible(true);
+        dispose();
+    }
+
+    public static void main(String[] args) {
+        try{
+            SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new LoginApp().setVisible(true);
+            }
+        });
+        }catch(Exception e){
+            e.getMessage();
+        }
+    }
+
+}
