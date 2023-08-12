@@ -1,0 +1,59 @@
+public class StoreProducts{
+
+    private String name;
+    private String category;
+    private String provider;
+    private double uPrice;
+    private int quantity;
+
+    public StoreProducts(){}
+
+    public StoreProducts(String name, String category, String provider, double uPrice, int quantity){
+        this.name=name;
+        this.category=category;
+        this.provider=provider;
+        this.uPrice=uPrice;
+        this.quantity=quantity;
+    }
+
+    public void setname(String name){
+        this.name=name;
+    }
+
+    public String getname(){
+        return name;
+    }
+
+    public void setcategory(String category){
+        this.category=category;
+    }
+
+    public String getcategory(){
+        return category;
+    }
+
+    public void setprovider(String provider){
+        this.provider=provider;
+    }
+
+    public String getprovider(){
+        return provider;
+    }
+
+    public void setuPrice(double uPrice){
+        this.uPrice=uPrice;
+    }
+
+    public double getuPrice(){
+        return uPrice;
+    }
+
+    public void setquantity(int quantity){
+        this.quantity=quantity;
+    }
+
+    public int getquantity(){
+        return quantity;
+    }
+
+}
