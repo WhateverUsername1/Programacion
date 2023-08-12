@@ -1,0 +1,23 @@
+public class UserDataStore {
+
+    private static UserDataStore instance = new UserDataStore();
+    private UserCredentials cred;
+
+    private UserDataStore() {
+        cred = UserCredentials.getInstance();
+    }
+
+    public static UserDataStore getInstance() {
+        return instance;
+    }
+
+    public boolean isLoginCorrect(String username, String password) {
+        if (!cred.containsUsername(username)) {
+            return false;
+        }
+
+        String storedPassword = cred.getPassword(username);
+
+        return password.equals(storedPassword);
+    }
+}
