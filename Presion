@@ -1,0 +1,24 @@
+public class Presion{
+
+    public static double strength, area;
+
+    public Presion(){}
+
+    public Presion(double strength, double area){
+        this.strength=strength;
+        this.area=area;
+    }
+
+    public void setstrength(double strength){this.strength=strength;}
+
+    public static double getstrength(){return strength;}
+
+    public void setarea(double area){this.area=area;}
+
+    public static double getarea(){return area;}
+
+    public static double CPress(){return getstrength()*getarea();}
+
+    public static void Result(){System.out.println(String.format("%.2f", CPress()));}
+    
+}
