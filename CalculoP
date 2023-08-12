@@ -1,0 +1,36 @@
+import java.util.Scanner;
+import java.io.*;
+
+public class CalculoP{
+
+    public static double x, y, answer;
+    public static Presion method=new Presion();
+
+    public static void main(String[] args){
+        Scanner reader=new Scanner(System.in);
+
+        try{
+
+            do{
+                System.out.println("Ingrese la fuerza: ");
+                x=reader.nextDouble();
+                method.setstrength(x);
+            }while(x<=0);
+
+            do{
+                System.out.println("Ingrese el area: ");
+                y=reader.nextDouble();
+                method.setarea(y);
+            }while(y<=0);
+
+            answer=method.CPress();
+
+            System.out.println("La presion es: ");
+            method.Result();
+
+        }catch(Exception exc){
+            System.out.println(exc.getMessage());
+        }
+
+    }
+}
