@@ -1,3 +1,5 @@
+//Interfaz gráfica, login.
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,24 +11,24 @@ public class Java_GUI extends JFrame {
     private JButton loginButton;
 
     public Java_GUI() {
-        // Set up the JFrame
+        
         setTitle("Login Form");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Create the components
+        
         JLabel usernameLabel = new JLabel("Usuario:");
         JLabel passwordLabel = new JLabel("Contraseña:");
         usernameField = new JTextField(20);
         passwordField = new JPasswordField(20);
         loginButton = new JButton("Log in");
 
-        // Create a panel and set the layout
+        
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
 
-        // Add components to the panel
+        
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(passwordLabel);
@@ -34,10 +36,9 @@ public class Java_GUI extends JFrame {
         panel.add(new JLabel());
         panel.add(loginButton);
 
-        // Add the panel to the JFrame
-        add(panel);
+        
 
-        // Add action listener to the login button
+        
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
