@@ -1,3 +1,5 @@
+//Método para cakcular la presión.
+
 public class Presion{
 
     public static double strength, area;
