@@ -1,3 +1,5 @@
+//Interfaz gráfica del inventario de una tienda pequeña.
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
